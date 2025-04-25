@@ -1,8 +1,10 @@
-activate:
+venv:
 	python3 -m venv venv
-	source venv/bin/activate
 
-deactivate:
+activate:
+	@echo "Please run 'source venv/bin/activate' in your shell"
+
+decactivate:
 	deactivate
 
 install:

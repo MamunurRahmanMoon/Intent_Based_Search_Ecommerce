@@ -22,7 +22,10 @@ class SearchRequest(BaseModel):
 
 @app.get("/")
 def root():
-    return {"status": "Welcode to the Intent-Based Search API", "app_name": os.getenv("APP_NAME")}
+    return {
+        "app_name": os.getenv("APP_NAME"),
+        "message": "Welcome to the Intent-Based Search API"
+    }
 
 
 @app.get("/health")
