@@ -1,36 +1,15 @@
-version: "3.8"
-
 services:
-  mysql:
-    image: mysql:8.0
-    container_name: mysql
-    environment:
-      MYSQL_ROOT_PASSWORD: 1234
-      MYSQL_DATABASE: ecommerce
-    ports:
-      - "3306:3306"
-    volumes:
-      - mysql_data:/var/lib/mysql
-    restart: unless-stopped
-
-  qdrant:
-    image: qdrant/qdrant:v1.3.0
-    container_name: qdrant
-    ports:
-      - "6333:6333"
-    volumes:
-      - qdrant_data:/qdrant/storage
-    restart: unless-stopped
-
-  app:
+  backend:
     build:
-      context: .
-    container_name: fastapi_app
+      context: ./backend
+      dockerfile: Dockerfile
     ports:
       - "8000:8000"
-    depends_on:
-      - mysql
-      - qdrant
+    # depends_on:
+    #   - mysql
+    #   - qdrant
+    volumes:
+      - ./backend/logs:/app/logs
     environment:
       - MYSQL_HOST=mysql
       - MYSQL_USER=root
@@ -38,7 +17,4 @@ services:
       - QDRANT_URL=http://qdrant:6333
       - QDRANT_COLLECTION=ecommerce
     command: [ "uvicorn", "src.api:app", "--host", "0.0.0.0", "--port", "8000" ]
-
-volumes:
-  mysql_data:
-  qdrant_data:
+  
