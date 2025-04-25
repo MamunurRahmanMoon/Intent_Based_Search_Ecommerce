@@ -1,42 +1,37 @@
-from fastapi import APIRouter, UploadFile, File
-from src.controllers.embed_controller import save_temp_file, process_and_insert_products, cleanup_temp_file
-from src.logger import get_logger
+from fastapi import APIRouter, HTTPException
+from pydantic import BaseModel
+from typing import Optional
+from src.utility.vector_database import search_similar_products
+from src.utility.embedding_model import EmbeddingModel
+from src.utility.logger import get_logger
 
 logger = get_logger(__name__)
 
-router = APIRouter(prefix="/embed", tags=["Embed"])
+# Initialize the embedding model
+model = EmbeddingModel()
 
-@router.post("")  # Changed from get to post since we're uploading a file
-async def train(file: UploadFile = File(...)):
-    """
-    Train the model with new product data from a CSV file.
-    
-    Args:
-        file: CSV file containing product data with columns: title, description
-        
-    Returns:
-        Training status and summary
-    """
+router = APIRouter(prefix="/search", tags=["Search"])
+
+class SearchRequest(BaseModel):
+    query: str
+    top_k: Optional[int] = 5
+
+@router.post("/")
+def search(request: SearchRequest):
+    """Perform semantic search on the product database."""
     try:
-        # Save file temporarily
-        temp_file = await save_temp_file(file)
-        
-        # Process and insert products
-        results = process_and_insert_products(temp_file)
-        
-        # Clean up temporary file
-        cleanup_temp_file(temp_file)
-        
-        return {
-            "status": "success",
-            "message": f"Successfully processed and inserted {results['successful_inserts']} products",
-            "total_products": results['total_products'],
-            "successful_inserts": results['successful_inserts']
-        }
-        
+        logger.info(
+            f"Received search request with query: {request.query} and top_k: {request.top_k}"
+        )
+        # Generate embedding for the query
+        query_embedding = model.get_embedding(request.query)
+        logger.info("Generated embedding for the query.")
+        # Perform search in Qdrant
+        results = search_similar_products(query_embedding, top_k=request.top_k)
+        logger.info("Search completed successfully.")
+        return {"results": results}
     except Exception as e:
-        logger.error(f"Error during training: {e}")
-        return {
-            "status": "error",
-            "message": str(e)
-        }
+        logger.error(f"Error during search: {e}")
+        raise HTTPException(
+            status_code=500, detail="An error occurred during the search."
+        )

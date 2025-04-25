@@ -2,23 +2,24 @@
 from fastapi import FastAPI, HTTPException, UploadFile, File
 from pydantic import BaseModel
 from src.utility.vector_database import search_similar_products, initialize_database, insert_product
-from src.utility.embedding_model import EmbeddingModel
+# from src.utility.embedding_model import EmbeddingModel
 from src.utility.logger import get_logger
 from src.utility.data_loader import process_and_generate_embeddings
-from src.routes import embed_routes, base_router
+from src.routes import embed_routes, base_router, search_router
 import os
 import pandas as pd
 
 app = FastAPI()
 
 # Initialize the embedding model
-model = EmbeddingModel()
+# model = EmbeddingModel()
 
 # Initialize logger
 logger = get_logger(__name__)
 
-app.include_router(embed_routes.router)
 app.include_router(base_router)
+app.include_router(search_router)
+app.include_router(embed_routes.router)
 
 # class SearchRequest(BaseModel):
 #     query: str

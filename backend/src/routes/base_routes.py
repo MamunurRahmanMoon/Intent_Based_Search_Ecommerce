@@ -2,10 +2,10 @@ from fastapi import APIRouter
 from src.utility.logger import get_logger
 import os
 
-router = APIRouter()
-
 # Initialize logger
 logger = get_logger(__name__)
+
+router = APIRouter(prefix="", tags=["Base"])
 
 @router.get("/")
 def root():

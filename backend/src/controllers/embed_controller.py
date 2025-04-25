@@ -17,7 +17,7 @@ async def save_temp_file(file: UploadFile) -> str:
         Path to the temporary file
     """
     contents = await file.read()
-    temp_file = "temp_products.csv"
+    temp_file = "temp/temp_products.csv"
     with open(temp_file, "wb") as f:
         f.write(contents)
     return temp_file
