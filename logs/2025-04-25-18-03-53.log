@@ -1,3 +1,0 @@
-2025-04-25 18:03:54,497 - httpx - INFO - HTTP Request: GET http://localhost:6333 "HTTP/1.1 200 OK"
-2025-04-25 18:04:00,949 - sentence_transformers.SentenceTransformer - INFO - Use pytorch device_name: cpu
-2025-04-25 18:04:00,950 - sentence_transformers.SentenceTransformer - INFO - Load pretrained SentenceTransformer: afschowdhury/s-xlmr-bn
