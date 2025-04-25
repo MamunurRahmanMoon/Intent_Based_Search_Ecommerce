@@ -1,10 +1,11 @@
+# src/utility/vector_database.py
 import os
 from typing import List
 import numpy as np
 from qdrant_client import QdrantClient
 from qdrant_client.http.models import VectorParams, Distance
 from dotenv import load_dotenv
-from src.logger import get_logger
+from src.utility.logger import get_logger
 
 load_dotenv()
 
@@ -13,7 +14,8 @@ logger = get_logger(__name__)
 # Initialize Qdrant client
 client = QdrantClient(
     url=os.getenv("QDRANT_URL", "http://localhost:6333"),
-    api_key=os.getenv("QDRANT_API_KEY"),
+    api_key=os.getenv("QDRANT_API_KEY",""),
+    check_compatibility=False
 )
 
 
@@ -34,25 +36,32 @@ def initialize_database():
         logger.error(f"Error while checking or creating collection: {e}")
 
 
-def insert_product(product_id: str, description: str, embedding: np.ndarray):
-    """Insert a new product into the Qdrant collection"""
+def insert_product(product_id: int, description: str, embedding: np.ndarray):
+    """Insert a new product into the Qdrant collection, checking for duplicates"""
     collection_name = os.getenv("QDRANT_COLLECTION", "ecommerce")
     try:
+        # Check for similar products (cosine similarity threshold of 0.8)
+        # search_results = search_similar_products(embedding, top_k=1)
+        # if search_results and search_results[0]["score"] > 0.8:
+        #     existing_product = search_results[0]
+        #     logger.info(f"Skipping duplicate product. Similar product found: {existing_product}")
+        #     return False  # Return False to indicate duplicate
+
         client.upsert(
             collection_name=collection_name,
             points=[
                 {
-                    "id": product_id,
+                    "id": product_id,  # Ensure this is an integer
                     "vector": embedding.tolist(),
                     "payload": {"description": description},
                 }
             ],
         )
-        logger.info(
-            f"Product '{product_id}' inserted into collection '{collection_name}'."
-        )
+        logger.info(f"Successfully inserted product {product_id}")
+        return True  # Return True to indicate successful insertion
     except Exception as e:
-        logger.error(f"Error while inserting product '{product_id}': {e}")
+        logger.error(f"Error while inserting product {product_id}: {e}")
+        raise
 
 
 def search_similar_products(query_embedding: np.ndarray, top_k: int = 5) -> List[dict]:

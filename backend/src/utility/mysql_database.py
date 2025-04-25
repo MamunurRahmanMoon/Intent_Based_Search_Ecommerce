@@ -1,8 +1,9 @@
+# src/utility/mysql_database.py
 import mysql.connector
 from mysql.connector import Error
 import os
 from dotenv import load_dotenv
-from src.logger import get_logger
+from src.utility.logger import get_logger
 
 # Load environment variables from .env
 load_dotenv()
