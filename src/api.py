@@ -5,6 +5,8 @@ from src.vector_database import search_similar_products
 from .embedding_model import EmbeddingModel
 from src.logger import get_logger
 
+import os
+
 app = FastAPI()
 
 # Initialize the embedding model
@@ -17,6 +19,15 @@ logger = get_logger(__name__)
 class SearchRequest(BaseModel):
     query: str
     top_k: int = 5
+
+@app.get("/")
+def root():
+    return {"status": "Welcode to the Intent-Based Search API", "app_name": os.getenv("APP_NAME")}
+
+
+@app.get("/health")
+def health_check():
+    return {"status": "ok"}
 
 
 @app.post("/search")

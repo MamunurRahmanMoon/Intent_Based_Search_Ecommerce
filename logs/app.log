@@ -126,3 +126,15 @@
 2025-04-25 04:41:56,941 - httpx - INFO - HTTP Request: POST http://localhost:6333/collections/ecommerce/points/search "HTTP/1.1 200 OK"
 2025-04-25 04:41:56,942 - src.vector_database - INFO - Search completed in collection 'ecommerce' for top 5 results.
 2025-04-25 04:41:56,942 - src.api - INFO - Search completed successfully.
+2025-04-25 16:48:31,982 - httpx - INFO - HTTP Request: GET http://localhost:6333 "HTTP/1.1 200 OK"
+2025-04-25 16:48:41,110 - sentence_transformers.SentenceTransformer - INFO - Use pytorch device_name: cpu
+2025-04-25 16:48:41,111 - sentence_transformers.SentenceTransformer - INFO - Load pretrained SentenceTransformer: afschowdhury/s-xlmr-bn
+2025-04-25 17:06:58,106 - httpx - INFO - HTTP Request: GET http://localhost:6333 "HTTP/1.1 200 OK"
+2025-04-25 17:07:07,855 - sentence_transformers.SentenceTransformer - INFO - Use pytorch device_name: cpu
+2025-04-25 17:07:07,855 - sentence_transformers.SentenceTransformer - INFO - Load pretrained SentenceTransformer: afschowdhury/s-xlmr-bn
+2025-04-25 17:10:11,731 - httpx - INFO - HTTP Request: GET http://localhost:6333 "HTTP/1.1 200 OK"
+2025-04-25 17:10:19,390 - sentence_transformers.SentenceTransformer - INFO - Use pytorch device_name: cpu
+2025-04-25 17:10:19,390 - sentence_transformers.SentenceTransformer - INFO - Load pretrained SentenceTransformer: afschowdhury/s-xlmr-bn
+2025-04-25 17:12:19,651 - httpx - INFO - HTTP Request: GET http://localhost:6333 "HTTP/1.1 200 OK"
+2025-04-25 17:12:29,353 - sentence_transformers.SentenceTransformer - INFO - Use pytorch device_name: cpu
+2025-04-25 17:12:29,353 - sentence_transformers.SentenceTransformer - INFO - Load pretrained SentenceTransformer: afschowdhury/s-xlmr-bn
