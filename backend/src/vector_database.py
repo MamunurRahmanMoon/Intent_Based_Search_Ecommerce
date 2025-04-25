@@ -34,7 +34,7 @@ def initialize_database():
         logger.error(f"Error while checking or creating collection: {e}")
 
 
-def insert_product(product_id: str, description: str, embedding: np.ndarray):
+def insert_product(product_id: int, description: str, embedding: np.ndarray):
     """Insert a new product into the Qdrant collection"""
     collection_name = os.getenv("QDRANT_COLLECTION", "ecommerce")
     try:
@@ -42,17 +42,16 @@ def insert_product(product_id: str, description: str, embedding: np.ndarray):
             collection_name=collection_name,
             points=[
                 {
-                    "id": product_id,
+                    "id": product_id,  # Ensure this is an integer
                     "vector": embedding.tolist(),
                     "payload": {"description": description},
                 }
             ],
         )
-        logger.info(
-            f"Product '{product_id}' inserted into collection '{collection_name}'."
-        )
+        logger.info(f"Successfully inserted product {product_id}")
     except Exception as e:
-        logger.error(f"Error while inserting product '{product_id}': {e}")
+        logger.error(f"Error while inserting product {product_id}: {e}")
+        raise
 
 
 def search_similar_products(query_embedding: np.ndarray, top_k: int = 5) -> List[dict]:

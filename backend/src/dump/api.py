@@ -35,12 +35,13 @@ def health_check():
 
 @app.post("/embed")
 async def train(file: UploadFile = File(...)):
-    return {
-            "status": "success",
-            "message": "Coming Soon",
-            "total_products": 0,
-            "successful_inserts": []
-        }
+    # print(file)
+    # return {
+    #     "status": "success",
+    #     "message": "Coming Soon",
+    #     "total_products": 0,
+    #     "successful_inserts": []
+    # }
 
     """Train the model with new product data from a CSV file.
     
