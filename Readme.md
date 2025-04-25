@@ -5,16 +5,16 @@
 - docker-compose -f docker-compose.database.yml up -d
 
 #### create virtual environment
-- make activate
+- make venv && source venv/bin/activate
 
 #### install dependencies
 - make install
 
 #### run app
-- make run
+- make dev
 
 #### deactivate virtual environment
-- make deactivate
+- deactivate
 
 ## fine-tuning
 - python fine_tune.py

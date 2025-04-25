@@ -1,11 +1,12 @@
 # src/search_api.py
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException, UploadFile, File
 from pydantic import BaseModel
-from src.vector_database import search_similar_products
+from src.vector_database import search_similar_products, initialize_database, insert_product
 from .embedding_model import EmbeddingModel
 from src.logger import get_logger
-
+from src.data_loader import process_and_generate_embeddings
 import os
+import pandas as pd
 
 app = FastAPI()
 
@@ -32,6 +33,69 @@ def root():
 def health_check():
     return {"status": "ok"}
 
+@app.post("/embed")
+async def train(file: UploadFile = File(...)):
+    return {
+            "status": "success",
+            "message": "Coming Soon",
+            "total_products": 0,
+            "successful_inserts": []
+        }
+
+    """Train the model with new product data from a CSV file.
+    
+    Args:
+        file: CSV file containing product data with columns: title, description
+    
+    Returns:
+        Training status and summary
+    """
+    try:
+        # Read the uploaded file
+        contents = await file.read()
+        # Save temporarily
+        temp_file = "temp_products.csv"
+        with open(temp_file, "wb") as f:
+            f.write(contents)
+            
+        # Process the data and generate embeddings
+        logger.info(f"Processing uploaded CSV file: {file.filename}")
+        data = process_and_generate_embeddings(temp_file)
+        
+        # Initialize Qdrant database
+        initialize_database()
+        
+        # Insert products into Qdrant
+        # collection_name = os.getenv("QDRANT_COLLECTION", "ecommerce")
+        success_count = 0
+        
+        for index, row in data.iterrows():
+            try:
+                insert_product(
+                    product_id=str(index),
+                    description=row["merged_text"],
+                    embedding=row["embedding"]
+                )
+                success_count += 1
+            except Exception as e:
+                logger.error(f"Failed to insert product {index}: {e}")
+                
+        # Clean up temporary file
+        os.remove(temp_file)
+        
+        return {
+            "status": "success",
+            "message": f"Successfully processed and inserted {success_count} products",
+            "total_products": len(data),
+            "successful_inserts": success_count
+        }
+        
+    except Exception as e:
+        logger.error(f"Error during training: {e}")
+        return {
+            "status": "error",
+            "message": str(e)
+        }
 
 @app.post("/search")
 def search(request: SearchRequest):

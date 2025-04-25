@@ -5,7 +5,7 @@ activate:
 	@echo "Please run 'source venv/bin/activate' in your shell"
 
 decactivate:
-	deactivate
+	@echo "Please run 'deactivate' in your shell"
 
 install:
 	pip install -r requirements.txt
