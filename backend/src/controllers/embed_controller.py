@@ -1,8 +1,8 @@
 from fastapi import UploadFile
 import os
-from src.logger import get_logger
-from src.data_loader import process_and_generate_embeddings
-from src.vector_database import initialize_database, insert_product
+from src.utility.logger import get_logger
+from src.utility.data_loader import process_and_generate_embeddings
+from src.utility.vector_database import initialize_database, insert_product
 
 logger = get_logger(__name__)
 

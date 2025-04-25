@@ -1,10 +1,11 @@
+# src/utility/vector_database.py
 import os
 from typing import List
 import numpy as np
 from qdrant_client import QdrantClient
 from qdrant_client.http.models import VectorParams, Distance
 from dotenv import load_dotenv
-from src.logger import get_logger
+from src.utility.logger import get_logger
 
 load_dotenv()
 
@@ -13,7 +14,7 @@ logger = get_logger(__name__)
 # Initialize Qdrant client
 client = QdrantClient(
     url=os.getenv("QDRANT_URL", "http://localhost:6333"),
-    api_key=os.getenv("QDRANT_API_KEY"),
+    api_key=os.getenv("QDRANT_API_KEY",""),
 )
 
 

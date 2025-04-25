@@ -1,10 +1,10 @@
 # src/main.py
 from fastapi import FastAPI, HTTPException, UploadFile, File
 from pydantic import BaseModel
-from src.vector_database import search_similar_products, initialize_database, insert_product
-from src.embedding_model import EmbeddingModel
-from src.logger import get_logger
-from src.data_loader import process_and_generate_embeddings
+from src.utility.vector_database import search_similar_products, initialize_database, insert_product
+from src.utility.embedding_model import EmbeddingModel
+from src.utility.logger import get_logger
+from src.utility.data_loader import process_and_generate_embeddings
 from src.routes import embed_routes, base_router
 import os
 import pandas as pd

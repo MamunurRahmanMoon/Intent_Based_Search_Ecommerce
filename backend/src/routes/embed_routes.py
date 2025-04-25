@@ -1,6 +1,6 @@
 from fastapi import APIRouter, UploadFile, File
 from src.controllers.embed_controller import save_temp_file, process_and_insert_products, cleanup_temp_file
-from src.logger import get_logger
+from src.utility.logger import get_logger
 
 logger = get_logger(__name__)
 

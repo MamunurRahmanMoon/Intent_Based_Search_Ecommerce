@@ -1,8 +1,8 @@
-# src/data_loader.py
+# src/utility/data_loader.py
 import pandas as pd
 import os
-from src.embedding_model import EmbeddingModel
-from src.logger import get_logger
+from src.utility.embedding_model import EmbeddingModel
+from src.utility.logger import get_logger
 
 logger = get_logger(__name__)
 
