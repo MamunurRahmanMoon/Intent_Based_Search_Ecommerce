@@ -1,6 +1,6 @@
 from datasets import load_dataset, Dataset, DatasetDict
 from sentence_transformers import InputExample, SentenceTransformer, losses
-from torch.utils.data import DataLoader
+# from torch.utils.data import DataLoader
 import pandas as pd
 from typing import Dict
 
