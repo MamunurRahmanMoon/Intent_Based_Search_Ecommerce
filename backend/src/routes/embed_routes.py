@@ -7,15 +7,15 @@ logger = get_logger(__name__)
 router = APIRouter(prefix="/embed", tags=["Embed"])
 
 @router.post("")  # Changed from get to post since we're uploading a file
-async def train(file: UploadFile = File(...)):
+async def embed_to_vector(file: UploadFile = File(...)):
     """
-    Train the model with new product data from a CSV file.
+    Embed the product data from a CSV file.
     
     Args:
         file: CSV file containing product data with columns: title, description
         
     Returns:
-        Training status and summary
+        Embedding status and summary
     """
     try:
         # Save file temporarily
@@ -35,7 +35,7 @@ async def train(file: UploadFile = File(...)):
         }
         
     except Exception as e:
-        logger.error(f"Error during training: {e}")
+        logger.error(f"Error during embedding: {e}")
         return {
             "status": "error",
             "message": str(e)

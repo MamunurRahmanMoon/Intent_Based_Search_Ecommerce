@@ -14,8 +14,7 @@ logger = get_logger(__name__)
 # Initialize Qdrant client
 client = QdrantClient(
     url=os.getenv("QDRANT_URL", "http://localhost:6333"),
-    api_key=os.getenv("QDRANT_API_KEY",""),
-    check_compatibility=False
+    check_compatibility=False,  # Disable version check to avoid warnings
 )
 
 

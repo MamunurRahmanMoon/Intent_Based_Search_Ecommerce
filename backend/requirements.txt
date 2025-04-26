@@ -7,3 +7,5 @@ pandas
 qdrant-client
 mysql-connector-python
 python-multipart
+rank_bm25
+numpy
