@@ -5,19 +5,13 @@ services:
       dockerfile: Dockerfile
     ports:
       - "8000:8000"
-    # depends_on:
-    #   - mysql
-    #   - qdrant
     volumes:
       - ./backend/logs:/app/logs
     environment:
       - APP_NAME=Intent-Based Search
-      # Mysql Database Configuration
       - MYSQL_HOST=localhost
       - MYSQL_USER=root
       - MYSQL_PASSWORD=1234
-      # Qdrant Configuration
       - QDRANT_URL=http://qdrant:6333
-      - QDRANT_API_KEY=  # Leave empty if not using an API key
       - QDRANT_COLLECTION=ecommerce
     command: [ "uvicorn", "src.main:app", "--host", "0.0.0.0", "--port", "8000" ]

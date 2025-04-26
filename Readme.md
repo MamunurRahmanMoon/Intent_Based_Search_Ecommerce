@@ -1,6 +1,6 @@
 # Intent_Based_Search
 
-## Local Setup
+## Local Setup(linux)
 #### Start database
 - docker compose -f docker-compose.database.yml up -d
 
@@ -18,9 +18,6 @@
 
 #### deactivate virtual environment
 - deactivate
-
-## fine-tuning
-- python fine_tune.py
 
 <!-- #### data store in qdrant - text -> embedding -> vector database
 - python init_data.py -->
