@@ -4,6 +4,9 @@
 #### Start database
 - docker-compose -f docker-compose.database.yml up -d
 
+#### change terminal directory
+- cd backend
+
 #### create virtual environment
 - make venv && source venv/bin/activate
 

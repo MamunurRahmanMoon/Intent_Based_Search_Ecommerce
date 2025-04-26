@@ -4,6 +4,7 @@ from typing import List
 import numpy as np
 from qdrant_client import QdrantClient
 from qdrant_client.http.models import VectorParams, Distance
+from qdrant_client.models import PointStruct
 from dotenv import load_dotenv
 from src.utility.logger import get_logger
 
@@ -35,7 +36,7 @@ def initialize_database():
         logger.error(f"Error while checking or creating collection: {e}")
 
 
-def insert_product(product_id: int, description: str, embedding: np.ndarray):
+def insert_product(product_id: int, description: str, embedding: np.ndarray, payload: dict):
     """Insert a new product into the Qdrant collection, checking for duplicates"""
     collection_name = os.getenv("QDRANT_COLLECTION", "ecommerce")
     try:
@@ -46,15 +47,26 @@ def insert_product(product_id: int, description: str, embedding: np.ndarray):
         #     logger.info(f"Skipping duplicate product. Similar product found: {existing_product}")
         #     return False  # Return False to indicate duplicate
 
+        # client.upsert(
+        #     collection_name=collection_name,
+        #     points=[
+        #         {
+        #             "id": product_id,  # Ensure this is an integer
+        #             "vector": embedding.tolist(),
+        #             "payload": {"description": description},
+        #         }
+        #     ],
+        # )
+        # payload = {"description": description}
         client.upsert(
             collection_name=collection_name,
             points=[
-                {
-                    "id": product_id,  # Ensure this is an integer
-                    "vector": embedding.tolist(),
-                    "payload": {"description": description},
-                }
-            ],
+                PointStruct(
+                    id=product_id,
+                    vector=embedding,
+                    payload=payload
+                )
+            ]
         )
         logger.info(f"Successfully inserted product {product_id}")
         return True  # Return True to indicate successful insertion

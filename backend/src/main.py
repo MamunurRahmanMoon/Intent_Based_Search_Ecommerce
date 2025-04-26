@@ -14,6 +14,9 @@ app = FastAPI()
 # Initialize the embedding model
 # model = EmbeddingModel()
 
+# Initialize database
+initialize_database()
+
 # Initialize logger
 logger = get_logger(__name__)
 
