@@ -1,5 +1,19 @@
 # Intent_Based_Search
 
+## Tech Stack & Tools
+- FastAPI (Python)
+- Qdrant (Vector Database)
+- Intent Classification Model (dslim/distilbert-NER) ~65MB
+- Semantic Search Model (sentence-transformers/all-MiniLM-L6-v2) ~90MB
+- Hybrid Search (BM25 + Semantic Search)
+
+
+### Server & Cost Calculation
+![Cost Calculation](./cost-calculation.jpeg)
+
+### Query Diagram
+![Query Diagram](./query-diagram.jpeg)
+
 ## Local Setup(linux)
 #### Start database
 - docker compose -f docker-compose.database.yml up -d
