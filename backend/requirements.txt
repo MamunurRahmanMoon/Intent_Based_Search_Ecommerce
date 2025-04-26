@@ -9,3 +9,6 @@ mysql-connector-python
 python-multipart
 rank_bm25
 numpy
+datasets
+hf_xet
+apache-airflow

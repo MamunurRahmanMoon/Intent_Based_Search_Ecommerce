@@ -29,7 +29,7 @@ def initialize_database():
         # Create the collection if it does not exist
         client.create_collection(
             collection_name=collection_name,
-            vectors_config=VectorParams(size=768, distance=Distance.COSINE),
+            vectors_config=VectorParams(size=384, distance=Distance.COSINE),
         )
         logger.info(f"Collection '{collection_name}' created in Qdrant.")
         logger.error(f"Error while checking or creating collection: {e}")
