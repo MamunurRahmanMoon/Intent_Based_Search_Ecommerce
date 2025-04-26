@@ -46,6 +46,9 @@ def process_and_insert_products(data) -> dict:
     initialize_database()
     model = EmbeddingModel()
 
+    # Track already inserted pair_ids to avoid duplicates in this import session
+    inserted_pair_ids = set()
+
     # Process each offer in each pair
     success_count = 0
     total_products = 0
@@ -97,6 +100,11 @@ def process_and_insert_products(data) -> dict:
                 "category_right": fields["category_right"]
             }
 
+            pair_id = payload["pair_id"]
+            if pair_id in inserted_pair_ids:
+                logger.debug(f"Skipping duplicate pair_id {pair_id}")
+                continue
+
             try:
                 insert_product(
                     product_id=product_id,
@@ -104,6 +112,7 @@ def process_and_insert_products(data) -> dict:
                     embedding=embedding,
                     payload=payload
                 )
+                inserted_pair_ids.add(pair_id)
                 success_count += 1
                 imported_products += 1
                 logger.debug(f"Successfully inserted product {product_id}")
