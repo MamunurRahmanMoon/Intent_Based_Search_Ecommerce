@@ -132,7 +132,22 @@ def hybrid_search(query: str, top_k: int = 5, semantic_weight: float = 0.7) -> L
         bm25_norm = min_max_norm(bm25_score_map)
         sem_norm = min_max_norm(sem_score_map)
 
-        # 4. Union all doc ids from both sources, skipping None
+        # If BM25 has no data, return semantic results as hybrid
+        if not bm25_score_map:
+            logger.warning(f"semantic_results: {semantic_results}")
+            combined_results = []
+            for idx, result in enumerate(semantic_results):
+                pid = result.get("id", idx)  # fallback to index if id is missing
+                combined_results.append({
+                    "id": int(pid) if pid is not None else idx,
+                    "score": result.get("score", 0.0),
+                    "payload": result.get("payload", {}),
+                    "source": "hybrid"
+                })
+            combined_results.sort(key=lambda x: x["score"], reverse=True)
+            logger.info(f"Hybrid search (semantic-only fallback). Found {len(combined_results[:top_k])} results")
+            return combined_results[:top_k]
+
         all_ids = set(bm25_score_map.keys()).union(set(sem_score_map.keys()))
         alpha = semantic_weight  # user can tune this
         combined_results = []
