@@ -2,7 +2,7 @@
 
 ## Local Setup
 #### Start database
-- docker-compose -f docker-compose.database.yml up -d
+- docker compose -f docker-compose.database.yml up -d
 
 #### change terminal directory
 - cd backend

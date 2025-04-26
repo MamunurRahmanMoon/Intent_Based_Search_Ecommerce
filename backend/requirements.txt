@@ -13,3 +13,4 @@ guardrails-ai
 datasets
 hf_xet
 apache-airflow
+transformers
