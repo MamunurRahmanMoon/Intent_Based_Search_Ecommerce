@@ -3,11 +3,13 @@ from src.utility.logger import get_logger
 from src.utility.embedding_model import EmbeddingModel
 from src.utility.vector_database import search_similar_products, client
 from src.utility.bm25_search import BM25_INSTANCE, search_products_bm25, initialize_bm25
+from src.utility.intent_extractor import IntentExtractor
 import numpy as np
 import os
 
 logger = get_logger(__name__)
 model = EmbeddingModel()
+intent_extractor = IntentExtractor()
 
 def initialize_search():
     """
@@ -59,17 +61,44 @@ def bm25_search_with_lazy_init(query: str, top_k: int = 5):
 
 def semantic_search(query: str, top_k: int = 5) -> List[Dict[str, Any]]:
     """
-    Perform semantic search using embeddings.
+    Perform semantic search using embeddings, analyzing intent first.
     """
     try:
+        # 1. Extract intent
+        intent = intent_extractor.extract_intent_components(query)
+        logger.info(f"Intent extracted: {intent}")
+
+        # 2. Continue with embedding and search
         logger.info(f"Performing semantic search for query: {query}")
         query_embedding = model.get_embedding(query)
         logger.info("Generated embedding for the query.")
         
         results = search_similar_products(query_embedding, top_k=top_k)
         logger.info(f"Semantic search completed successfully. Found {len(results)} results")
+
+        # 3. Intent-based filtering (demo: filter by constraints, e.g., price)
+        filtered_results = results
+        if intent.get("constraints"):
+            constraints = intent["constraints"]
+            filtered_results = []
+            for result in results:
+                payload = result.get("payload", {})
+                # Example: filter for price constraints like 'under $500'
+                for constraint in constraints:
+                    if "under $" in constraint.lower():
+                        try:
+                            max_price = float(constraint.lower().split("under $")[-1].replace(",", "").strip())
+                            price = float(payload.get("price", 0))
+                            if price > 0 and price < max_price:
+                                filtered_results.append(result)
+                        except Exception:
+                            continue
+            # If no results matched constraints, fallback to original results
+            if not filtered_results:
+                filtered_results = results
         
-        return results
+        # Attach intent to response for transparency
+        return {"intent": intent, "results": filtered_results}
         
     except Exception as e:
         logger.error(f"Error during semantic search: {e}")
@@ -102,7 +131,7 @@ def hybrid_search(query: str, top_k: int = 5, semantic_weight: float = 0.7) -> L
 
         # Build dictionaries for fast lookup
         bm25_dict = {r.get("id"): r for r in bm25_results if r.get("id") is not None}
-        semantic_dict = {r.get("id"): r for r in semantic_results if r.get("id") is not None}
+        semantic_dict = {r.get("id"): r for r in semantic_results["results"] if r.get("id") is not None}
 
         # --- Hybrid (BM25 + Semantic) search following Qdrant/BM25 demo logic ---
         # 1. Build BM25 score map for all valid doc ids
@@ -114,7 +143,7 @@ def hybrid_search(query: str, top_k: int = 5, semantic_weight: float = 0.7) -> L
 
         # 2. Build semantic (vector) score map for all valid doc ids
         sem_score_map = {}
-        for r in semantic_results:
+        for r in semantic_results["results"]:
             pid = r.get("id")
             if pid is not None:
                 sem_score_map[pid] = float(r.get("score", 0))
@@ -136,7 +165,7 @@ def hybrid_search(query: str, top_k: int = 5, semantic_weight: float = 0.7) -> L
         if not bm25_score_map:
             logger.warning(f"semantic_results: {semantic_results}")
             combined_results = []
-            for idx, result in enumerate(semantic_results):
+            for idx, result in enumerate(semantic_results["results"]):
                 pid = result.get("id", idx)  # fallback to index if id is missing
                 combined_results.append({
                     "id": int(pid) if pid is not None else idx,
