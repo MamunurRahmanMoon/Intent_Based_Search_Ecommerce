@@ -57,8 +57,8 @@ def process_and_insert_products(data) -> dict:
     logger.info(f"Starting to process {len(data)} rows")
 
     for idx, row in data.iterrows():
-        if imported_products >= 10:
-            break
+        # if imported_products >= 10:
+        #     break
 
         # Extract both left and right fields for payload
         fields = {}

@@ -9,8 +9,8 @@ mysql-connector-python
 python-multipart
 rank_bm25
 numpy
-guardrails-ai
+# guardrails-ai
 datasets
 hf_xet
-apache-airflow
+# apache-airflow
 transformers
