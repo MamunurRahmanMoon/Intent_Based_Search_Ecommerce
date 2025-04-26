@@ -9,3 +9,5 @@ mysql-connector-python
 python-multipart
 rank_bm25
 numpy
+guardrails-ai
+datasets

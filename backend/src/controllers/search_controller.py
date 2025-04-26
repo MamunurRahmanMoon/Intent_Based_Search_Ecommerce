@@ -28,6 +28,10 @@ def initialize_search():
             if text:
                 corpus.append(text)
         
+        if not corpus:
+            logger.warning("No documents found to initialize BM25. Skipping BM25 initialization.")
+            return
+        
         # Initialize BM25 with the corpus
         initialize_bm25(corpus)
         logger.info("BM25 initialized successfully with %d documents", len(corpus))
