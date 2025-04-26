@@ -25,7 +25,7 @@ def process_and_generate_embeddings(file_path):
         data = load_csv(file_path)
         model = EmbeddingModel()
         # Merge title and description columns
-        data["merged_text"] = data["title"] + " " + data["description"]
+        data["merged_text"] = data["title_left"] + " " + data["description_left"]
         logger.info("Merged 'title' and 'description' columns.")
         # Generate embeddings for the merged text
         data["embedding"] = data["merged_text"].apply(model.get_embedding)

@@ -2,7 +2,7 @@ from typing import Optional, List, Dict, Any
 from src.utility.logger import get_logger
 from src.utility.embedding_model import EmbeddingModel
 from src.utility.vector_database import search_similar_products, client
-from src.utility.bm25_search import initialize_bm25, search_products_bm25
+from src.utility.bm25_search import BM25_INSTANCE, search_products_bm25, initialize_bm25
 import numpy as np
 import os
 
@@ -23,22 +23,39 @@ def initialize_search():
         
         # Extract text data for BM25
         corpus = []
+        payloads = []
         for point in points:
-            text = point.payload.get("description", "")
+            fields = []
+            for key in [
+                "title_left", "title_right",
+                "description_left", "description_right",
+                "brand_left", "brand_right",
+                "category_left", "category_right"
+            ]:
+                value = point.payload.get(key, "")
+                if value and value != "None":
+                    fields.append(str(value))
+            text = " ".join(fields).strip()
             if text:
                 corpus.append(text)
+                payloads.append(point.payload)
         
         if not corpus:
             logger.warning("No documents found to initialize BM25. Skipping BM25 initialization.")
             return
         
-        # Initialize BM25 with the corpus
-        initialize_bm25(corpus)
+        # Initialize BM25 with the corpus and payloads
+        initialize_bm25(corpus, payloads)
         logger.info("BM25 initialized successfully with %d documents", len(corpus))
         
     except Exception as e:
         logger.error(f"Error initializing search: {e}")
         raise
+
+def bm25_search_with_lazy_init(query: str, top_k: int = 5):
+    if BM25_INSTANCE is None:
+        initialize_search()
+    return search_products_bm25(query, top_k=top_k)
 
 def semantic_search(query: str, top_k: int = 5) -> List[Dict[str, Any]]:
     """
@@ -64,7 +81,7 @@ def bm25_search(query: str, top_k: int = 5) -> List[Dict[str, Any]]:
     """
     try:
         logger.info(f"Performing BM25 search for query: {query}")
-        results = search_products_bm25(query, top_k=top_k)
+        results = bm25_search_with_lazy_init(query, top_k=top_k)
         logger.info(f"BM25 search completed successfully. Found {len(results)} results")
         
         return results
@@ -81,7 +98,7 @@ def hybrid_search(query: str, top_k: int = 5, semantic_weight: float = 0.7) -> L
     try:
         logger.info(f"Performing hybrid search for query: {query}")
         semantic_results = semantic_search(query, top_k=top_k)
-        bm25_results = bm25_search(query, top_k=top_k)
+        bm25_results = bm25_search_with_lazy_init(query, top_k=top_k)
 
         # Build dictionaries for fast lookup
         bm25_dict = {r.get("id"): r for r in bm25_results if r.get("id") is not None}

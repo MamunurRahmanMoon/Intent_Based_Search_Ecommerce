@@ -90,7 +90,7 @@ def search_similar_products(query_embedding: np.ndarray, top_k: int = 5) -> List
         return [
             {
                 "product_id": result.id,
-                "description": result.payload["description"],
+                "payload": result.payload,
                 "score": result.score,
             }
             for result in results

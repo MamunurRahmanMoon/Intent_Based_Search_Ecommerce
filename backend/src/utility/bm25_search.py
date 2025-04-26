@@ -5,19 +5,18 @@ import numpy as np
 
 logger = get_logger(__name__)
 
-# Global variables to store corpus and BM25 instance
+# Global variables to store corpus, payloads, and BM25 instance
 CORPUS = []
+BM25_PAYLOADS = []
 BM25_INSTANCE = None
 
-def initialize_bm25(corpus: List[str]):
+def initialize_bm25(corpus: List[str], payloads: List[dict]):
     """
-    Initialize BM25 with the given corpus.
-    
-    Args:
-        corpus: List of documents to index
+    Initialize BM25 with the given corpus and store payloads for result lookup.
     """
-    global CORPUS, BM25_INSTANCE
+    global CORPUS, BM25_INSTANCE, BM25_PAYLOADS
     CORPUS = corpus
+    BM25_PAYLOADS = payloads
     # Tokenize the corpus for BM25
     tokenized_corpus = [doc.lower().split() for doc in corpus]
     BM25_INSTANCE = BM25Okapi(tokenized_corpus)
@@ -26,13 +25,6 @@ def initialize_bm25(corpus: List[str]):
 def search_products_bm25(query: str, top_k: int = 5) -> List[Dict[str, Any]]:
     """
     Perform BM25 search on the products.
-    
-    Args:
-        query: Search query
-        top_k: Number of results to return
-        
-    Returns:
-        List of search results with BM25 scores
     """
     if BM25_INSTANCE is None:
         raise RuntimeError("BM25 not initialized. Please call initialize_bm25 first.")
@@ -49,9 +41,7 @@ def search_products_bm25(query: str, top_k: int = 5) -> List[Dict[str, Any]]:
             results.append({
                 "id": idx,
                 "score": float(scores[idx]),
-                "payload": {
-                    "text": CORPUS[idx]
-                }
+                "payload": BM25_PAYLOADS[idx]
             })
     
     logger.info("BM25 search completed. Found %d results", len(results))
