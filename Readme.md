@@ -9,10 +9,15 @@
 
 
 ### Server & Cost Calculation
-![Cost Calculation](./cost-calculation.jpeg)
+![Cost Calculation](./reference/cost-calculation.jpeg)
 
 ### Query Diagram
-![Query Diagram](./query-diagram.jpeg)
+![Query Diagram](./reference/query-diagram.jpeg)
+
+### Loadtest
+| Local | Server |
+| --- | --- |
+| ![Local](./reference/loadtest-local.png) | ![Server](./reference/loadtest-server.png) |
 
 ## Local Setup(linux)
 #### Start database
