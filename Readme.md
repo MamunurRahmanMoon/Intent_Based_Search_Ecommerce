@@ -3,8 +3,8 @@
 ## Tech Stack & Tools
 - FastAPI (Python)
 - Qdrant (Vector Database)
-- Intent Classification Model (dslim/distilbert-NER) ~65MB
-- Semantic Search Model (sentence-transformers/all-MiniLM-L6-v2) ~90MB
+- Intent Classification Model (dslim/distilbert-NER) - 768 dimension ~65MB
+- Semantic Search Model (sentence-transformers/all-MiniLM-L6-v2) - 384 dimension ~90MB
 - Hybrid Search (BM25 + Semantic Search)
 
 
