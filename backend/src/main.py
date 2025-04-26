@@ -6,6 +6,7 @@ from src.utility.vector_database import search_similar_products, initialize_data
 from src.utility.logger import get_logger
 from src.utility.data_loader import process_and_generate_embeddings
 from src.routes import embed_routes, base_router, search_router
+from src.controllers.search_controller import initialize_search
 import os
 import pandas as pd
 
@@ -14,8 +15,17 @@ app = FastAPI()
 # Initialize the embedding model
 # model = EmbeddingModel()
 
+# Initialize database
+
 # Initialize logger
 logger = get_logger(__name__)
+
+# Initialize search (BM25) at app startup
+def on_startup():
+    initialize_database()
+    initialize_search()
+
+app.add_event_handler("startup", on_startup)
 
 app.include_router(base_router)
 app.include_router(search_router)
