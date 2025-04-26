@@ -11,3 +11,5 @@ rank_bm25
 numpy
 guardrails-ai
 datasets
+hf_xet
+apache-airflow
