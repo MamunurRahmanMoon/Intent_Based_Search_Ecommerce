@@ -1,4 +1,6 @@
-# Intent_Based_Search
+# Intent_Based_Search_System
+
+**This project is presented at AI Enginineering Hackathon organized by BrainSTation23 and Poridhi.io**
 
 ## Tech Stack & Tools
 - FastAPI (Python)
